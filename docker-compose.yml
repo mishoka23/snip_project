@@ -1,0 +1,16 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: snip_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: snip_db
+      POSTGRES_USER: snip_user
+      POSTGRES_PASSWORD: 940430
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
