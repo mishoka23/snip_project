@@ -42,3 +42,4 @@ def redirect_to_original_url(request, slug):
                         ip_hash = ip_hash, country_code = None)
 
     return redirect(link.original_url)
+
