@@ -1,0 +1,4 @@
+Start Docker:
+    docker compose up db
+        or
+    docker compose up -d db
