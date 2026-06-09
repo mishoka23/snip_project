@@ -16,8 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
+from apps.links.views import redirect_to_original_url
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("api/v1/", include("apps.links.urls"))
+    path("api/v1/", include("apps.links.urls")),
+    path("<str:slug>/", redirect_to_original_url, name="redirect-to-original-url"),
 ]
