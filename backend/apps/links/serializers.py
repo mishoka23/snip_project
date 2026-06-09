@@ -7,12 +7,14 @@ from apps.links.validators import validate_public_url
 
 class LinkCreateSerializer(serializers.ModelSerializer):
     short_url = serializers.SerializerMethodField(read_only = True)
+    click_count = serializers.SerializerMethodField(read_only = True)
 
     class Meta:
         model = Link
-        fields = ["id", "original_url", "slug", "custom_alias", "short_url", "created_at"]
+        # fields = ["id", "original_url", "slug", "custom_alias", "short_url", "created_at"]
+        fields = ["id", "original_url", "slug", "custom_alias", "short_url", "click_count", "created_at"]
 
-        read_only_fields = ["id", "slug", "short_url", "created_at"]
+        read_only_fields = ["id", "slug", "short_url", "click_count", "created_at"]
 
     def validate_original_url(self, value):    
         validate_public_url(value)
@@ -47,8 +49,12 @@ class LinkCreateSerializer(serializers.ModelSerializer):
         request = self.context.get("request")
 
         if request:
-            return request.build_absolute_uri(f"/{obj.slug}")
+            return request.build_absolute_uri(f"/{obj.slug}/")
 
         base_domain = getattr(settings, "BASE_DOMAIN", "http://localhost:8000")
         
-        return f"{base_domain}/{obj.slug}"
+        return f"{base_domain}/{obj.slug}/"
+    
+    # to count clicks
+    def get_click_count(self, obj):
+        return obj.clicks.count()

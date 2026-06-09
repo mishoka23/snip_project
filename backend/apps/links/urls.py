@@ -1,8 +1,9 @@
-from django.urls import path
+from rest_framework.routers import DefaultRouter
 
-from apps.links.views import LinkCreateAPIView
+from apps.links.views import LinkViewSet
 
 
-urlpatterns = [
-    path("links/", LinkCreateAPIView.as_view(), name="link-create"),
-]
+router = DefaultRouter()
+router.register("links", LinkViewSet, basename="links")
+
+urlpatterns = router.urls

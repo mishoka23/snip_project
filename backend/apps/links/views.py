@@ -1,7 +1,4 @@
-from rest_framework import permissions, status
-from rest_framework.response import Response
-from rest_framework.views import APIView
-
+from rest_framework import permissions, viewsets
 from apps.links.serializers import LinkCreateSerializer
 
 from django.shortcuts import get_object_or_404, redirect
@@ -10,20 +7,53 @@ from apps.analytics.models import Click
 from apps.analytics.utils import get_client_ip, hash_ip_address
 from apps.links.models import Link
 
-class LinkCreateAPIView(APIView):
-    permission_classes = [permissions.AllowAny]
+from .permissions import IsOwnerOrAdmin
 
-    def post(self, request):
-        serializer = LinkCreateSerializer(data = request.data, context={"request": request})
+# Obsolete 
+# class LinkCreateAPIView(APIView):
+#     permission_classes = [permissions.AllowAny]
 
-        if serializer.is_valid():
-            link = serializer.save()
+#     def post(self, request):
+#         serializer = LinkCreateSerializer(data = request.data, context = {"request": request})
 
-            return Response(
-                LinkCreateSerializer(link,context = {"request": request}).data,
-                status=status.HTTP_201_CREATED)
+#         if serializer.is_valid():
+#             link = serializer.save()
 
-        return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
+#             return Response(
+#                 LinkCreateSerializer(link,context = {"request": request}).data,
+#                 status = status.HTTP_201_CREATED)
+
+#         return Response(serializer.errors, status = status.HTTP_400_BAD_REQUEST)
+    
+class LinkViewSet(viewsets.ModelViewSet):
+    serializer_class = LinkCreateSerializer
+    lookup_field = "slug"
+
+    def get_queryset(self):
+        user = self.request.user
+
+        if user.is_authenticated and user.is_staff:
+            return Link.objects.all().order_by("-created_at")
+
+        if user.is_authenticated:
+            return Link.objects.filter(owner=user).order_by("-created_at")
+
+        return Link.objects.none()
+
+    def get_permissions(self):
+        if self.action == "create":
+            return [permissions.AllowAny()]
+
+        if self.action in ["retrieve", "destroy"]:
+            return [permissions.IsAuthenticated(), IsOwnerOrAdmin()]
+
+        if self.action == "list":
+            return [permissions.IsAuthenticated()]
+
+        return [permissions.IsAuthenticated()]
+
+    def perform_create(self, serializer):
+        serializer.save()
 
 def redirect_to_original_url(request, slug):
     link = get_object_or_404(Link, slug = slug, is_active=True)
