@@ -1,19 +1,31 @@
 export function formatApiError(error) {
-  if (error.response?.data?.message) {
-    return error.response.data.message;
+  const data = error.response?.data;
+
+  if (!data) {
+    return error.message || "Something went wrong. Please try again.";
   }
 
-  if (error.response?.data?.original_url) {
-    return error.response.data.original_url[0];
+  if (typeof data === "string") {
+    return data;
   }
 
-  if (error.response?.data?.detail) {
-    return error.response.data.detail;
+  if (data.message) {
+    return data.message;
   }
 
-  if (error.message) {
-    return error.message;
+  if (data.detail) {
+    return data.detail;
   }
 
-  return "Something went wrong. Please try again.";
+  const fieldErrors = Object.entries(data)
+    .map(([field, messages]) => {
+      if (Array.isArray(messages)) {
+        return `${field}: ${messages.join(" ")}`;
+      }
+
+      return `${field}: ${messages}`;
+    })
+    .join(" ");
+
+  return fieldErrors || "Something went wrong. Please try again.";
 }
