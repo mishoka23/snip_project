@@ -1,5 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 
+import Navbar from "./components/Navbar";
 import ProtectedRoute from "./components/ProtectedRoute";
 import HomePage from "./pages/HomePage";
 import DashboardPage from "./pages/DashboardPage";
@@ -8,29 +9,33 @@ import NotFoundPage from "./pages/NotFoundPage";
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<HomePage />} />
+    <>
+      <Navbar />
 
-      <Route
-        path="/dashboard"
-        element={
-          <ProtectedRoute>
-            <DashboardPage />
-          </ProtectedRoute>
-        }
-      />
+      <Routes>
+        <Route path="/" element={<HomePage />} />
 
-      <Route
-        path="/dashboard/:slug"
-        element={
-          <ProtectedRoute>
-            <AnalyticsPage />
-          </ProtectedRoute>
-        }
-      />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <DashboardPage />
+            </ProtectedRoute>
+          }
+        />
 
-      <Route path="*" element={<NotFoundPage />} />
-    </Routes>
+        <Route
+          path="/dashboard/:slug"
+          element={
+            <ProtectedRoute>
+              <AnalyticsPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route path="*" element={<NotFoundPage />} />
+      </Routes>
+    </>
   );
 }
 
