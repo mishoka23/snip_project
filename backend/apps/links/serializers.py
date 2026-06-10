@@ -2,6 +2,7 @@ from django.conf import settings
 from rest_framework import serializers
 
 from apps.links.models import Link
+
 from apps.links.utils import generate_unique_slug
 from apps.links.validators import validate_public_url
 
@@ -57,4 +58,33 @@ class LinkCreateSerializer(serializers.ModelSerializer):
     
     # to count clicks
     def get_click_count(self, obj):
+        if hasattr(obj, "click_count"):
+            return obj.click_count
+
+        return obj.clicks.count()
+    
+class LinkManagementSerializer(serializers.ModelSerializer):
+    short_url = serializers.SerializerMethodField(read_only=True)
+    click_count = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = Link
+        fields = ["id", "original_url", "slug", "custom_alias", "short_url", 
+                "click_count", "is_active", "created_at", "expires_at",]
+
+        read_only_fields = fields
+
+    def get_short_url(self, obj):
+        request = self.context.get("request")
+
+        if request:
+            return request.build_absolute_uri(f"/{obj.slug}/")
+
+        base_domain = getattr(settings, "BASE_DOMAIN", "http://localhost:8000")
+        return f"{base_domain}/{obj.slug}/"
+
+    def get_click_count(self, obj):
+        if hasattr(obj, "click_count"):
+            return obj.click_count
+
         return obj.clicks.count()
