@@ -1,13 +1,36 @@
+import { Route, Routes } from "react-router-dom";
+
+import ProtectedRoute from "./components/ProtectedRoute";
+import HomePage from "./pages/HomePage";
+import DashboardPage from "./pages/DashboardPage";
+import AnalyticsPage from "./pages/AnalyticsPage";
+import NotFoundPage from "./pages/NotFoundPage";
+
 function App() {
   return (
-    <main className="min-h-screen bg-slate-950 text-white flex items-center justify-center">
-      <section className="text-center">
-        <h1 className="text-4xl font-bold">Snip</h1>
-        <p className="mt-4 text-slate-300">
-          React frontend is running.
-        </p>
-      </section>
-    </main>
+    <Routes>
+      <Route path="/" element={<HomePage />} />
+
+      <Route
+        path="/dashboard"
+        element={
+          <ProtectedRoute>
+            <DashboardPage />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/dashboard/:slug"
+        element={
+          <ProtectedRoute>
+            <AnalyticsPage />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route path="*" element={<NotFoundPage />} />
+    </Routes>
   );
 }
 
