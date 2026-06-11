@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { formatApiError } from "../api/formatError";
+import { formatApiError } from "../utils/formatError";
 
 function ShortenForm({ onCreateLink }) {
   const [originalUrl, setOriginalUrl] = useState("");

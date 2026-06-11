@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import { loginUser } from "../api/authApi";
 import { useAuthStore } from "../store/authStore";
-import { formatApiError } from "../api/formatError";
+import { formatApiError } from "../utils/formatError";
 
 function SignInModal({ onClose, onSwitchToSignUp }) {
   const login = useAuthStore((state) => state.login);

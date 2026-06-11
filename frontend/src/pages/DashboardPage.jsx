@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import ShortenForm from "../components/ShortenForm";
 import LinkTable from "../components/LinkTable";
 import { createLink, deleteLink, getLinks } from "../api/linksApi";
-import { formatApiError } from "../api/formatError";
+import { formatApiError } from "../utils/formatError";
 
 function DashboardPage() {
   const [linksData, setLinksData] = useState({

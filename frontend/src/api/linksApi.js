@@ -1,4 +1,4 @@
-import apiClient from "./apiClient";
+import apiClient from "./client";
 
 export async function createLink(payload) {
   const response = await apiClient.post("/links/", payload);
