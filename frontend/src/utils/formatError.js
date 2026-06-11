@@ -2,7 +2,7 @@ export function formatApiError(error) {
   const data = error.response?.data;
 
   if (!data) {
-    return error.message || "Something went wrong. Please try again.";
+    return "Network error. Check if the backend server is running.";
   }
 
   if (typeof data === "string") {
@@ -17,15 +17,17 @@ export function formatApiError(error) {
     return data.detail;
   }
 
-  const fieldErrors = Object.entries(data)
-    .map(([field, messages]) => {
-      if (Array.isArray(messages)) {
-        return `${field}: ${messages.join(" ")}`;
-      }
+  if (typeof data === "object") {
+    const firstError = Object.values(data)[0];
 
-      return `${field}: ${messages}`;
-    })
-    .join(" ");
+    if (Array.isArray(firstError)) {
+      return firstError[0];
+    }
 
-  return fieldErrors || "Something went wrong. Please try again.";
+    if (typeof firstError === "string") {
+      return firstError;
+    }
+  }
+
+  return "Something went wrong. Please try again.";
 }

@@ -7,6 +7,7 @@ import DashboardPage from "./pages/DashboardPage";
 import AnalyticsPage from "./pages/AnalyticsPage";
 import NotFoundPage from "./pages/NotFoundPage";
 
+
 function App() {
   return (
     <>
@@ -14,7 +15,7 @@ function App() {
 
       <Routes>
         <Route path="/" element={<HomePage />} />
-
+        
         <Route
           path="/dashboard"
           element={
