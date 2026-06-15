@@ -1,11 +1,12 @@
 import { useState } from "react";
-
+import { useNavigate } from 'react-router-dom'
 import { loginUser } from "../api/authApi";
 import { useAuthStore } from "../store/authStore";
 import { formatApiError } from "../utils/formatError";
 
 function SignInModal({ onClose, onSwitchToSignUp }) {
   const login = useAuthStore((state) => state.login);
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     email: "",
@@ -56,6 +57,7 @@ function SignInModal({ onClose, onSwitchToSignUp }) {
 
       login(tokenData);
       onClose();
+      navigate("/dashboard");
     } catch (error) {
       setErrorMessage(formatApiError(error));
     } finally {

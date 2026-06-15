@@ -30,9 +30,8 @@ function ShortenForm({ onCreateLink }) {
       setResult(data);
       setOriginalUrl("");
       setCustomAlias("");
-      console.log(result);
+
     } catch (error) {
-      console.log(result);
       setErrorMessage(formatApiError(error));
     } finally {
       setIsSubmitting(false);
