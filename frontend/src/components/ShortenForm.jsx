@@ -14,6 +14,14 @@ function ShortenForm({ onCreateLink }) {
 
     setErrorMessage("");
     setResult(null);
+
+    const trimmedAlias = customAlias.trim();
+
+    if (trimmedAlias.length > 8) {
+      setErrorMessage("Custom alias cannot be longer than 8 characters.");
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
@@ -21,8 +29,8 @@ function ShortenForm({ onCreateLink }) {
         original_url: originalUrl,
       };
 
-      if (customAlias.trim()) {
-        payload.custom_alias = customAlias.trim();
+      if (trimmedAlias) {
+        payload.custom_alias = trimmedAlias;
       }
 
       const data = await onCreateLink(payload);

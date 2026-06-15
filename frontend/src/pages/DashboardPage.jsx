@@ -44,7 +44,7 @@ function DashboardPage() {
 
   const handleDeleteLink = async (slug) => {
     const confirmed = window.confirm(
-      `Are you sure you want to delete ${slug}?`
+      `Are you sure you want to delete "${slug}" ?`
     );
 
     if (!confirmed) {
