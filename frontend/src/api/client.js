@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000/api/v1";
+  import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8080/api/v1";
 
 export const TOKEN_STORAGE_KEYS = {
   access: "snip_access_token",

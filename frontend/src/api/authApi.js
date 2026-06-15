@@ -1,4 +1,4 @@
-import Client, { TOKEN_STORAGE_KEYS } from "./client";
+import apiClient, { TOKEN_STORAGE_KEYS } from "./client";
 
 export async function registerUser(formData) {
   const response = await apiClient.post("/auth/register/", formData);

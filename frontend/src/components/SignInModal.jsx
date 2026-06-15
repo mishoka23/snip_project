@@ -50,7 +50,7 @@ function SignInModal({ onClose, onSwitchToSignUp }) {
       setIsSubmitting(true);
 
       const tokenData = await loginUser({
-        email: formData.email.trim(),
+        username: formData.email.trim(),
         password: formData.password,
       });
 
