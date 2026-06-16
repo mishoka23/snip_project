@@ -98,7 +98,7 @@ function AnalyticsPage() {
 
 
   return (
-    <main className="mx-auto max-w-6xl px-4 py-8">
+    <main className="mx-auto max-w-6xl px-3 py-5 sm:px-4 sm:py-8">
       <Breadcrumb slug={slug} />
 
       <header className="mt-6">
@@ -113,7 +113,7 @@ function AnalyticsPage() {
         {linkData.original_url && (
           <p
             title={linkData.original_url}
-            className="mt-2 max-w-3xl truncate text-sm text-gray-600"
+            className="mt-2 max-w-3xl break-all text-sm text-gray-600 sm:truncate"
           >
             {linkData.original_url}
           </p>
@@ -152,7 +152,7 @@ function AnalyticsPage() {
           <EmptyState message="No click data is available for this link yet." />
         ) : (
           <div className="mt-6 overflow-x-auto">
-            <div className="h-80 min-w-[650px]">
+            <div className="h-72 min-w-[600px] sm:h-80">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart
                   data={clicksByDay}
