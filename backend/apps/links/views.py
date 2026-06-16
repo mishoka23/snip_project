@@ -15,6 +15,7 @@ from apps.analytics.models import Click
 from apps.analytics.utils import get_client_ip, hash_ip_address
 from apps.links.models import Link
 from apps.links.serializers import LinkCreateSerializer, LinkManagementSerializer
+from apps.links.throttles import AnonymousLinkCreateThrottle
 
 from .permissions import IsOwnerOrAdmin
 
@@ -28,6 +29,12 @@ class LinkViewSet(viewsets.ModelViewSet):
 
         return LinkManagementSerializer
 
+    def get_throttles(self):
+        if self.action == "create":
+            return [AnonymousLinkCreateThrottle()]
+        
+        return super().get_throttles()
+    
     def get_queryset(self):
         user = self.request.user
 

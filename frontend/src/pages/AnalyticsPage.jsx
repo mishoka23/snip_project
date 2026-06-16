@@ -143,7 +143,7 @@ function AnalyticsPage() {
         />
       </section>
 
-      <section className="mt-8 rounded-xl border bg-white p-4 shadow-sm sm:p-6">
+      <section className="mt-8 min-w-0 overflow-hidden rounded-xl border bg-white p-4 shadow-sm sm:p-6">
         <h2 className="text-lg font-semibold text-gray-900">
           Clicks in the last 30 days
         </h2>
@@ -151,8 +151,8 @@ function AnalyticsPage() {
         {clicksByDay.length === 0 ? (
           <EmptyState message="No click data is available for this link yet." />
         ) : (
-          <div className="mt-6 overflow-x-auto">
-            <div className="h-72 min-w-[600px] sm:h-80">
+          <div className="mt-6 w-full max-w-full overflow-x-auto">
+            <div className="h-72 min-w-[600px] sm:h-80 sm:w-full sm:min-w-[700px]">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart
                   data={clicksByDay}

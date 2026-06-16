@@ -1,13 +1,16 @@
 import { create } from "zustand";
+import { TOKEN_STORAGE_KEYS } from "../api/client";
+
 
 export const useAuthStore = create((set) => ({
-  accessToken: localStorage.getItem("accessToken"),
-  refreshToken: localStorage.getItem("refreshToken"),
-  isAuthenticated: Boolean(localStorage.getItem("accessToken")),
+
+  accessToken: localStorage.getItem(TOKEN_STORAGE_KEYS.access),
+  refreshToken: localStorage.getItem(TOKEN_STORAGE_KEYS.refresh),
+  isAuthenticated: Boolean(localStorage.getItem(TOKEN_STORAGE_KEYS.access)),
 
   login: ({ access, refresh }) => {
-    localStorage.setItem("accessToken", access);
-    localStorage.setItem("refreshToken", refresh);
+    localStorage.setItem(TOKEN_STORAGE_KEYS.access, access);
+    localStorage.setItem(TOKEN_STORAGE_KEYS.refresh, refresh);
 
     set({
       accessToken: access,
@@ -17,13 +20,14 @@ export const useAuthStore = create((set) => ({
   },
 
   logout: () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
+    localStorage.removeItem(TOKEN_STORAGE_KEYS.access);
+    localStorage.removeItem(TOKEN_STORAGE_KEYS.refresh);
 
     set({
       accessToken: null,
       refreshToken: null,
       isAuthenticated: false,
+      user:null,
     });
   },
 }));

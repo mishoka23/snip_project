@@ -1,5 +1,7 @@
 import axios from "axios";
 
+
+
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8080/api/v1";
 
@@ -20,6 +22,8 @@ apiClient.interceptors.request.use((config) => {
 
   if (accessToken) {
     config.headers.Authorization = `Bearer ${accessToken}`;
+  } else {
+    delete config.headers.Authorization;
   }
 
   return config;
