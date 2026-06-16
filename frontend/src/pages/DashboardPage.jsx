@@ -5,6 +5,9 @@ import LinkTable from "../components/LinkTable";
 import { createLink, deleteLink, getLinks } from "../api/linksApi";
 import { formatApiError } from "../utils/formatError";
 
+import QRModal from "../components/QRModal";
+
+
 function DashboardPage() {
   const [linksData, setLinksData] = useState({
     count: 0,
@@ -12,6 +15,8 @@ function DashboardPage() {
     previous: null,
     results: [],
   });
+
+  const [selectedQrUrl, setSelectedQrUrl] = useState(null);
 
   const [page, setPage] = useState(1);
   const [isLoadingLinks, setIsLoadingLinks] = useState(false);
@@ -97,6 +102,7 @@ function DashboardPage() {
             links={linksData.results}
             isLoading={isLoadingLinks}
             onDeleteLink={handleDeleteLink}
+            onShowQrCode={setSelectedQrUrl}
           />
 
           <div className="mt-6 flex items-center justify-between">
@@ -122,6 +128,12 @@ function DashboardPage() {
           </div>
         </section>
       </div>
+              {selectedQrUrl && (
+          <QRModal
+            shortUrl={selectedQrUrl}
+            onClose={() => setSelectedQrUrl(null)}
+          />
+        )}
     </main>
   );
 }

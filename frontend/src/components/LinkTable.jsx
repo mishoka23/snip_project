@@ -1,4 +1,6 @@
-function LinkTable({ links, isLoading, onDeleteLink }) {
+import { Link } from "react-router-dom"
+
+function LinkTable({ links, isLoading, onDeleteLink, onShowQrCode }) {
   const copyToClipboard = async (value) => {
     await navigator.clipboard.writeText(value);
   };
@@ -71,6 +73,13 @@ function LinkTable({ links, isLoading, onDeleteLink }) {
                     Copy
                   </button>
 
+                  <Link
+                    to={`/dashboard/${link.slug}`}
+                    className="inline-flex items-center justify-center rounded-md border px-3 py-1 text-xs hover:bg-gray-50"
+>
+                    Analytics
+                  </Link>
+
                   <button
                     type="button"
                     onClick={() => onDeleteLink(link.slug)}
@@ -78,6 +87,15 @@ function LinkTable({ links, isLoading, onDeleteLink }) {
                   >
                     Delete
                   </button>
+
+                  <button
+                    type="button"
+                    onClick={() => onShowQrCode(link.short_url)}
+                    className="rounded-md border px-3 py-1.5 text-sm hover:bg-gray-50"
+                  >
+                    QR Code
+                  </button>
+
                 </div>
               </td>
             </tr>

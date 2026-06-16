@@ -3,7 +3,8 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.decorators import action
 
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import redirect
+from django.conf import settings
 from django.utils import timezone
 from django.db.models import Count
 from django.db.models.functions import TruncDate
@@ -124,13 +125,10 @@ class LinkViewSet(viewsets.ModelViewSet):
 
 
 def redirect_to_original_url(request, slug):
-    link = get_object_or_404(Link, slug=slug, is_active=True)
-
-    if link.expires_at and link.expires_at <= timezone.now():
-        link.is_active = False
-        link.save(update_fields=["is_active"])
-
-        return redirect("/404")
+    try:
+        link = Link.objects.get(slug=slug, is_active=True)
+    except Link.DoesNotExist:
+        return redirect(f"{settings.FRONTEND_URL}/not-found")
 
     client_ip = get_client_ip(request)
     ip_hash = hash_ip_address(client_ip)

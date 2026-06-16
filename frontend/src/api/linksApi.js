@@ -19,3 +19,8 @@ export async function deleteLink(slug) {
   const response = await apiClient.delete(`/links/${slug}/`);
   return response.data;
 }
+
+export async function getLinkAnalytics(slug) {
+  const response = await apiClient.get(`/links/${slug}/analytics/`);
+  return response.data;
+}
