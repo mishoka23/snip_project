@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 
 from django.shortcuts import redirect
+from django.http import HttpResponse
 from django.conf import settings
 from django.utils import timezone
 from django.db.models import Count
@@ -16,6 +17,7 @@ from apps.analytics.utils import get_client_ip, hash_ip_address
 from apps.links.models import Link
 from apps.links.serializers import LinkCreateSerializer, LinkManagementSerializer
 from apps.links.throttles import AnonymousLinkCreateThrottle
+from apps.links.rate_limits import is_redirect_rate_limited
 
 from .permissions import IsOwnerOrAdmin
 
@@ -132,12 +134,22 @@ class LinkViewSet(viewsets.ModelViewSet):
 
 
 def redirect_to_original_url(request, slug):
+    client_ip = get_client_ip(request)
+
+    if is_redirect_rate_limited(client_ip):
+        return HttpResponse("Too many redirect requests. Please try again shortly.", status = 429, content_type = "text/plain")
+    
     try:
         link = Link.objects.get(slug=slug, is_active=True)
     except Link.DoesNotExist:
         return redirect(f"{settings.FRONTEND_URL}/not-found")
 
-    client_ip = get_client_ip(request)
+    if link.expires_at and link.expires_at <= timezone.now():
+        link.is_active = False
+        link.save(update_fields = ["is_active"])
+        
+        return redirect(f"{settings.FRONTEND_URL}/not-found")
+
     ip_hash = hash_ip_address(client_ip)
 
     Click.objects.create(

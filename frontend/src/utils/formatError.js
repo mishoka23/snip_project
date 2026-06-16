@@ -9,7 +9,7 @@ export function formatApiError(error) {
   if (status === 429) {
     const retryAfter = Number(
       error.response?.headers?.["retry-after"],
-    );
+    );  
 
     if (Number.isFinite(retryAfter) && retryAfter > 0) {
       if (retryAfter >= 3600) {
