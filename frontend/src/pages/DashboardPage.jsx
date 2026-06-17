@@ -110,7 +110,7 @@ function DashboardPage() {
               type="button"
               disabled={!linksData.previous || isLoadingLinks}
               onClick={() => loadLinks(page - 1)}
-              className="rounded-md border px-4 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-50"
+              className="rounded-md border px-4 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-50 enabled:active:scale-90"
             >
               Previous
             </button>
@@ -121,7 +121,7 @@ function DashboardPage() {
               type="button"
               disabled={!linksData.next || isLoadingLinks}
               onClick={() => loadLinks(page + 1)}
-              className="rounded-md border px-4 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-50"
+              className="rounded-md border px-4 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-50 enabled:active:scale-90"
             >
               Next
             </button>

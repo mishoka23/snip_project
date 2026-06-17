@@ -154,14 +154,14 @@ function LinkTable({ links, isLoading, onDeleteLink, onShowQrCode }) {
                   <button
                     type="button"
                     onClick={() => copyToClipboard(link.short_url)}
-                    className="rounded-md border px-3 py-1 text-xs hover:bg-gray-50"
+                    className="rounded-md border px-3 py-1 text-xs hover:bg-gray-50 transition-transform duration-100 active:scale-90"
                   >
                     Copy
                   </button>
 
                   <Link
                     to={`/dashboard/${link.slug}`}
-                    className="inline-flex items-center justify-center rounded-md border px-3 py-1 text-xs hover:bg-gray-50"
+                    className="inline-flex items-center justify-center rounded-md border px-3 py-1 text-xs hover:bg-gray-50 active:scale-90"
                     >
                     Analytics
                   </Link>
@@ -169,7 +169,7 @@ function LinkTable({ links, isLoading, onDeleteLink, onShowQrCode }) {
                   <button
                     type="button"
                     onClick={() => onDeleteLink(link.slug)}
-                    className="rounded-md border border-red-200 px-3 py-1 text-xs text-red-600 hover:bg-red-50"
+                    className="rounded-md border border-red-200 px-3 py-1 text-xs text-red-600 hover:bg-red-50 active:scale-90"
                   >
                     Delete
                   </button>
@@ -177,7 +177,7 @@ function LinkTable({ links, isLoading, onDeleteLink, onShowQrCode }) {
                   <button
                     type="button"
                     onClick={() => onShowQrCode(link.short_url)}
-                    className="rounded-md border px-3 py-1.5 text-sm hover:bg-gray-50"
+                    className="rounded-md border px-3 py-1.5 text-sm hover:bg-gray-50 active:scale-90"
                   >
                     QR Code
                   </button>
