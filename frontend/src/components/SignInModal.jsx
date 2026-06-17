@@ -5,6 +5,8 @@ import { useAuthStore } from "../store/authStore";
 import { formatApiError } from "../utils/formatError";
 
 function SignInModal({ onClose, onSwitchToSignUp }) {
+  // console.log(onClose)
+  // console.log(onSwitchToSignUp)
   const login = useAuthStore((state) => state.login);
   const navigate = useNavigate();
 
