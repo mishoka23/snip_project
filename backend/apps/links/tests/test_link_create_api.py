@@ -1,9 +1,11 @@
 from django.urls import reverse
+from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.test import APITestCase
 
 from apps.links.models import Link
 
+User = get_user_model()
 
 class LinkCreateAPITests(APITestCase):
     # every test method so each test starts with the same URL.
@@ -78,3 +80,108 @@ class LinkCreateAPITests(APITestCase):
 
         self.assertEqual(link.custom_alias, "my-link")
         self.assertEqual(link.slug, "my-link")
+
+    def test_reject_creating_with_duplicated_custom_alias(self):
+        payload = {
+            "original_url": "https://example.com",
+            "custom_alias": "my-link"
+            }
+
+        response = self.client.post(self.url, payload, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        duplicated_payload = {
+            "original_url": "https://example.com",
+            "custom_alias": "my-link"
+            }
+        
+        second_response = self.client.post(self.url, duplicated_payload, format = "json")
+
+        self.assertEqual(second_response.status_code, status.HTTP_400_BAD_REQUEST)
+
+        self.assertIn("custom_alias", second_response.data["details"])
+
+    def test_when_user_authenticated_assigned_owner(self):
+        user = User.objects.create_user(
+            username = "ms@google.com",
+            email = "ms@google.com",
+            password = "1234*Abv"
+        )
+
+        self.client.force_authenticate(user = user)
+
+        payload = {
+            "original_url": "https://example.com",
+            "custom_alias": "own-link"
+        }
+
+        response = self.client.post(self.url, payload, format = "json")
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        link = Link.objects.get(custom_alias = "own-link")
+
+        self.assertEqual(link.owner, user)
+
+    def test_successful_create_returns_all_expected_fields(self):
+        payload = {
+            "original_url": "https://example.com",
+            "custom_alias": "own-link"
+        }
+
+        response = self.client.post(self.url, payload, format = "json")
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        expected_fields = {
+            "id", "original_url", "slug", "custom_alias", 
+            "short_url", "click_count", "created_at"
+        }
+
+        self.assertEqual(response.data.keys(), expected_fields)
+        self.assertIsNotNone(response.data["id"])
+        self.assertEqual(response.data["original_url"], payload["original_url"])
+
+        self.assertEqual(response.data["custom_alias"], payload["custom_alias"])
+        self.assertEqual(response.data["slug"], payload["custom_alias"])
+
+        self.assertEqual(response.data["click_count"], 0)
+        self.assertIsNotNone(response.data["created_at"])
+
+        self.assertTrue(response.data["short_url"].endswith(f"/{response.data['slug']}/"))
+
+    def test_create_link_generates_default_slug(self):
+        payload = {
+            "original_url": "https://example.com",
+            "custom_alias": "own-link"
+        }
+
+        response = self.client.post(self.url, payload, format = "json")
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertIn("slug", response.data)
+        self.assertNotEqual(response.data["slug"], payload["original_url"])
+
+    def test_new_link_has_zero_click_count(self):
+        payload = {
+            "original_url": "https://example.com",
+            "custom_alias": "own-link"
+        } 
+
+        response = self.client.post(self.url, payload, format = "json")
+
+        self.assertEqual(response.data["click_count"], 0)
+
+    # def test_backend_rejects_custom_alias_more_than_8_chars(self):
+    #     payload = {
+    #         "original_url": "https://example.com",
+    #         "custom_alias": "personal-link"
+    #     } 
+
+    #     response = self.client.post(self.url, payload, format = "json")
+
+    #     self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    #     self.assertEqual(response.data["error"], "custom_alias")
+    #     self.assertIn("custom_alias", response.data["details"])
