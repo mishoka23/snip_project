@@ -46,7 +46,6 @@ class LinkCreateAPITests(APITestCase):
         self.assertIn("slug", response.data)
         self.assertIn("short_url", response.data)
 
-    
     def test_create_link_without_url_returns_error(self):  
         response = self.client.post(self.url, {}, format="json")
 

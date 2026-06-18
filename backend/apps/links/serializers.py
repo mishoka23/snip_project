@@ -1,3 +1,5 @@
+
+import re
 from django.conf import settings
 from rest_framework import serializers
 
@@ -26,8 +28,27 @@ class LinkCreateSerializer(serializers.ModelSerializer):
         if not value:
             return value
 
-        if Link.objects.filter(custom_alias = value).exists():
-            raise serializers.ValidationError("This custom alias is already taken.")
+        value = value.strip()
+
+        if len(value) > 8:
+            raise serializers.ValidationError(
+                "Custom alias must not exceed 8 characters."
+            )
+
+        if not re.fullmatch(r"[A-Za-z0-9-]+", value):
+            raise serializers.ValidationError(
+                "Custom alias may contain only letters, numbers, and hyphens."
+            )
+
+        if Link.objects.filter(custom_alias=value).exists():
+            raise serializers.ValidationError(
+                "This custom alias is already taken."
+            )
+
+        if Link.objects.filter(slug=value).exists():
+            raise serializers.ValidationError(
+                "This alias is already in use."
+            )
 
         return value
     
