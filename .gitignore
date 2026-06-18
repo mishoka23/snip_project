@@ -238,3 +238,7 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+
+DJANGO_REACT_LEARNING_GUIDE.md
+PROJECT_DEEP_DIVE.md
