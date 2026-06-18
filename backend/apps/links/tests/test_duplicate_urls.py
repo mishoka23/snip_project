@@ -121,5 +121,4 @@ class DuplicateURLTests(APITestCase):
         )
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-
         self.assertEqual(Link.objects.filter(owner=self.user_one).count(), 2)
