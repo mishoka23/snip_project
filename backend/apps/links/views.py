@@ -63,6 +63,23 @@ class LinkViewSet(viewsets.ModelViewSet):
             return [permissions.IsAuthenticated(), IsOwnerOrAdmin()]
 
         return [permissions.IsAuthenticated()]
+    
+    def create(self, request, *args, **kwargs):
+        user = (request.user if request.user.is_authenticated else None)
+
+        original_url = request.data.get("original_url")
+
+        if user and original_url:
+            existing_link = (Link.objects.filter(
+                owner=user,
+                original_url=original_url,
+                is_active=True).first())
+
+            if existing_link:
+                serializer = self.get_serializer(existing_link)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+
+        return super().create(request, *args, **kwargs)
 
     def perform_create(self, serializer):
         serializer.save()
@@ -100,7 +117,6 @@ class LinkViewSet(viewsets.ModelViewSet):
 
         for index in range(30):
             day = start_date + timedelta(days = index)
-
             clicks_per_day.append({"date": day.isoformat(),"clicks": clicks_by_day.get(day, 0),})
 
         top_referrers = (
