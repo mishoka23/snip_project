@@ -63,3 +63,34 @@ class RedirectIPSecurityTests(TestCase):
         response = self.client.get(self.redirect_url)
 
         self.assertRedirects(response, "https://example.com", fetch_redirect_response=False)
+
+
+class HashIPAddressTests(TestCase):
+    @override_settings(SECRET_KEY="test-secret-key")
+    def test_same_ip_produces_same_hash(self):
+        first_hash = hash_ip_address("203.0.113.10")
+        second_hash = hash_ip_address("203.0.113.10")
+
+        self.assertEqual(first_hash, second_hash)
+
+    @override_settings(SECRET_KEY="test-secret-key")
+    def test_different_ips_produce_different_hashes(self):
+        first_hash = hash_ip_address("203.0.113.10")
+        second_hash = hash_ip_address("203.0.113.11")
+
+        self.assertNotEqual(first_hash, second_hash)
+
+    @override_settings(SECRET_KEY="test-secret-key")
+    def test_hash_does_not_equal_raw_ip(self):
+        raw_ip = "203.0.113.10"
+
+        result = hash_ip_address(raw_ip)
+
+        self.assertNotEqual(result, raw_ip)
+        self.assertEqual(len(result), 64)
+
+    @override_settings(SECRET_KEY="test-secret-key")
+    def test_missing_ip_returns_empty_string(self):
+        result = hash_ip_address(None)
+
+        self.assertEqual(result, "")
