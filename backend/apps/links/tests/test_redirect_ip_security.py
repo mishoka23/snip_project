@@ -12,10 +12,10 @@ from apps.links.models import Link
     SECRET_KEY="test-secret-key",
     FRONTEND_URL="http://localhost:5173",
 )
+
 class RedirectIPSecurityTests(TestCase):
     def setUp(self):
         self.link = Link.objects.create(original_url="https://example.com", slug="abc123", is_active=True)
-
         self.redirect_url = reverse("redirect-to-original-url", kwargs={"slug": self.link.slug})
 
     @patch("apps.links.views.is_redirect_rate_limited", return_value=False)
