@@ -7,7 +7,7 @@ def hash_ip_address(ip_address):
     if not ip_address:
         return ""
 
-    value = f"{settings.SECRET_KEY}:{ip_address}"
+    value = f"{settings.IP_HASH_SALT}:{ip_address}"
 
     return hashlib.sha256(value.encode("utf-8")).hexdigest()
 
