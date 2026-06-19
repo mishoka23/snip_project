@@ -18,7 +18,7 @@ export function formatApiError(error) {
         return `You have reached the anonymous link limit. Please try again in about ${hours} hour${
           hours === 1 ? "" : "s"
         }, or sign in to continue.`;
-      }
+}
 
       const minutes = Math.ceil(retryAfter / 60);
 
