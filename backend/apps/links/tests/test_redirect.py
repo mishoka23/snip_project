@@ -24,10 +24,8 @@ class RedirectTests(TestCase):
 
     @patch("apps.links.views.is_redirect_rate_limited", return_value=False)
     @patch("apps.links.views.get_client_ip", return_value="203.0.113.10")
-    def test_valid_slug_redirects_to_original_url(self,
-        _mock_get_client_ip,
-        _mock_rate_limit,
-    ):
+    def test_valid_slug_redirects_to_original_url(self, _mock_get_client_ip,
+        _mock_rate_limit):
         response = self.client.get(self.redirect_url)
 
         self.assertEqual(response.status_code, 302)
@@ -35,10 +33,8 @@ class RedirectTests(TestCase):
 
     @patch("apps.links.views.is_redirect_rate_limited", return_value=False)
     @patch("apps.links.views.get_client_ip", return_value="203.0.113.10")
-    def test_redirect_creates_click_record(self,
-        _mock_get_client_ip,
-        _mock_rate_limit,
-    ):
+    def test_redirect_creates_click_record(self, _mock_get_client_ip,
+        _mock_rate_limit):
         response = self.client.get(
             self.redirect_url,
             HTTP_REFERER="https://google.com",
@@ -56,9 +52,7 @@ class RedirectTests(TestCase):
         self.assertEqual(len(click.ip_hash), 64)
 
     @patch("apps.links.views.is_redirect_rate_limited", return_value=False)
-    def test_missing_slug_redirects_to_frontend_not_found(self,
-        _mock_rate_limit,
-    ):
+    def test_missing_slug_redirects_to_frontend_not_found(self, _mock_rate_limit):
         response = self.client.get(
             reverse(
                 "redirect-to-original-url",
@@ -72,9 +66,7 @@ class RedirectTests(TestCase):
         self.assertEqual(Click.objects.count(), 0)
 
     @patch("apps.links.views.is_redirect_rate_limited", return_value=False)
-    def test_inactive_link_redirects_to_not_found(self,
-        _mock_rate_limit,
-    ):
+    def test_inactive_link_redirects_to_not_found(self, _mock_rate_limit):
         self.link.is_active = False
         self.link.save(update_fields=["is_active"])
 
@@ -86,8 +78,7 @@ class RedirectTests(TestCase):
 
     @patch("apps.links.views.is_redirect_rate_limited", return_value=False)
     def test_expired_link_is_deactivated_and_redirects_to_not_found(self,
-        _mock_rate_limit,
-    ):
+        _mock_rate_limit):
         self.link.expires_at = timezone.now() - timedelta(minutes=1)
         self.link.save(update_fields=["expires_at"])
 
@@ -103,10 +94,8 @@ class RedirectTests(TestCase):
 
     @patch("apps.links.views.is_redirect_rate_limited", return_value=True)
     @patch("apps.links.views.get_client_ip", return_value="203.0.113.10")
-    def test_rate_limited_redirect_returns_429(self,
-        _mock_get_client_ip,
-        _mock_rate_limit,
-    ):
+    def test_rate_limited_redirect_returns_429(self, _mock_get_client_ip,
+        _mock_rate_limit):
         response = self.client.get(self.redirect_url)
 
         self.assertEqual(response.status_code, 429)
